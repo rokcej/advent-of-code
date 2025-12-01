@@ -1,0 +1,206 @@
+[package]
+name = "advent-of-code-2025"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[[bin]]
+name = "day01_part1"
+path = "day01/part1.rs"
+
+[[bin]]
+name = "day01_part2"
+path = "day01/part2.rs"
+
+[[bin]]
+name = "day02_part1"
+path = "day02/part1.rs"
+
+[[bin]]
+name = "day02_part2"
+path = "day02/part2.rs"
+
+[[bin]]
+name = "day03_part1"
+path = "day03/part1.rs"
+
+[[bin]]
+name = "day03_part2"
+path = "day03/part2.rs"
+
+[[bin]]
+name = "day04_part1"
+path = "day04/part1.rs"
+
+[[bin]]
+name = "day04_part2"
+path = "day04/part2.rs"
+
+[[bin]]
+name = "day05_part1"
+path = "day05/part1.rs"
+
+[[bin]]
+name = "day05_part2"
+path = "day05/part2.rs"
+
+[[bin]]
+name = "day06_part1"
+path = "day06/part1.rs"
+
+[[bin]]
+name = "day06_part2"
+path = "day06/part2.rs"
+
+[[bin]]
+name = "day07_part1"
+path = "day07/part1.rs"
+
+[[bin]]
+name = "day07_part2"
+path = "day07/part2.rs"
+
+[[bin]]
+name = "day08_part1"
+path = "day08/part1.rs"
+
+[[bin]]
+name = "day08_part2"
+path = "day08/part2.rs"
+
+[[bin]]
+name = "day09_part1"
+path = "day09/part1.rs"
+
+[[bin]]
+name = "day09_part2"
+path = "day09/part2.rs"
+
+[[bin]]
+name = "day10_part1"
+path = "day10/part1.rs"
+
+[[bin]]
+name = "day10_part2"
+path = "day10/part2.rs"
+
+[[bin]]
+name = "day11_part1"
+path = "day11/part1.rs"
+
+[[bin]]
+name = "day11_part2"
+path = "day11/part2.rs"
+
+[[bin]]
+name = "day12_part1"
+path = "day12/part1.rs"
+
+[[bin]]
+name = "day12_part2"
+path = "day12/part2.rs"
+
+[[bin]]
+name = "day13_part1"
+path = "day13/part1.rs"
+
+[[bin]]
+name = "day13_part2"
+path = "day13/part2.rs"
+
+[[bin]]
+name = "day14_part1"
+path = "day14/part1.rs"
+
+[[bin]]
+name = "day14_part2"
+path = "day14/part2.rs"
+
+[[bin]]
+name = "day15_part1"
+path = "day15/part1.rs"
+
+[[bin]]
+name = "day15_part2"
+path = "day15/part2.rs"
+
+[[bin]]
+name = "day16_part1"
+path = "day16/part1.rs"
+
+[[bin]]
+name = "day16_part2"
+path = "day16/part2.rs"
+
+[[bin]]
+name = "day17_part1"
+path = "day17/part1.rs"
+
+[[bin]]
+name = "day17_part2"
+path = "day17/part2.rs"
+
+[[bin]]
+name = "day18_part1"
+path = "day18/part1.rs"
+
+[[bin]]
+name = "day18_part2"
+path = "day18/part2.rs"
+
+[[bin]]
+name = "day19_part1"
+path = "day19/part1.rs"
+
+[[bin]]
+name = "day19_part2"
+path = "day19/part2.rs"
+
+[[bin]]
+name = "day20_part1"
+path = "day20/part1.rs"
+
+[[bin]]
+name = "day20_part2"
+path = "day20/part2.rs"
+
+[[bin]]
+name = "day21_part1"
+path = "day21/part1.rs"
+
+[[bin]]
+name = "day21_part2"
+path = "day21/part2.rs"
+
+[[bin]]
+name = "day22_part1"
+path = "day22/part1.rs"
+
+[[bin]]
+name = "day22_part2"
+path = "day22/part2.rs"
+
+[[bin]]
+name = "day23_part1"
+path = "day23/part1.rs"
+
+[[bin]]
+name = "day23_part2"
+path = "day23/part2.rs"
+
+[[bin]]
+name = "day24_part1"
+path = "day24/part1.rs"
+
+[[bin]]
+name = "day24_part2"
+path = "day24/part2.rs"
+
+[[bin]]
+name = "day25_part1"
+path = "day25/part1.rs"
+
+[[bin]]
+name = "day25_part2"
+path = "day25/part2.rs"
