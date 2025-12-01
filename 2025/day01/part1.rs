@@ -9,20 +9,20 @@ fn read_lines(path: &str) -> Vec<String> {
 }
 
 fn main() {
-    let mut dial: u32 = 50;
-    let mut zero_count: u32 = 0;
+    let mut dial: i32 = 50;
+    let mut zero_count: i32 = 0;
 
     for line in read_lines("day01/input") {
         let (direction_str, rotation_str) = line.split_at(1);
-        let rotation = rotation_str.parse::<u32>().expect("Invalid rotation");
+        let rotation: i32 = rotation_str.parse().expect("Invalid rotation");
 
         match direction_str {
-            "L" => dial += 100 - (rotation % 100),
-            "R" => dial += rotation,
+            "L" => dial = (dial - rotation).rem_euclid(100),
+            "R" => dial = (dial + rotation).rem_euclid(100),
             _ => panic!("Invalid direction {}", direction_str),
         }
 
-        if dial % 100 == 0 {
+        if dial == 0 {
             zero_count += 1;
         }
     }
