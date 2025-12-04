@@ -1,6 +1,6 @@
 # Script for managing Advent of Code solutions
 # Run the script with parameter -h to display more info
-# To add support for new languages, modify the get_template and get_commands functions
+# To add support for new languages, modify the get_setup_template and get_run_commands functions
 
 import argparse
 from pathlib import Path
@@ -8,8 +8,12 @@ import requests
 import subprocess
 import time
 
+#############################
+## Language configurations ##
+#############################
+
 # Solution code templates
-def get_template(language, year, day, part):
+def get_setup_template(language, year, day, part) -> str:
     match language:
         case "cpp":
             return f"int main() {{\n    // TODO\n    return 0;\n}}\n"
@@ -23,38 +27,50 @@ def get_template(language, year, day, part):
     assert False, f"Template not found for language {language}"
 
 # Commands for compiling and executing solutions
-def get_commands(language, year, day, part):
+def get_run_commands(language: str, year: int, day: int, part: int) -> dict:
     match language:
         case "cpp":
             return {
-                "dir":     f"./{year}/day{day:02}",
-                "compile": ["g++", "-std=c++17", "-O2", "-o", f"part{part}", f"part{part}.cpp"],
-                "execute": [f"./part{part}"]
+                "work_dir": f"./{year}/day{day:02}",
+                "compile":  ["g++", "-std=c++17", "-O2", "-o", f"part{part}", f"part{part}.cpp"],
+                "execute":  [f"./part{part}"]
             }
         case "cs":
             return {
-                "dir":     f"./{year}",
-                "compile": ["dotnet", "build", "-o", "./bin/build", "--nologo", "-v", "q", "-clp:NoSummary"],
-                "execute": ["dotnet", f"./bin/build/{year}.dll", f"{day}", f"{part}"]
+                "work_dir": f"./{year}",
+                "compile":  ["dotnet", "build", "-o", "./bin/build", "--nologo", "-v", "q", "-clp:NoSummary"],
+                "execute":  ["dotnet", f"./bin/build/{year}.dll", f"{day}", f"{part}"]
             }
         case "py":
             return {
-                "dir":     f"./{year}/day{day:02}",
-                "compile": None,
-                "execute": ["python", f"part{part}.py"]
+                "work_dir": f"./{year}/day{day:02}",
+                "compile":  None,
+                "execute":  ["python", f"part{part}.py"]
             }
         case "rs":
             return {
-                "dir":     f"./{year}",
-                "compile": ["cargo", "build", "--release", "--bin", f"day{day:02}_part{part}"],
-                "execute": [f"./target/release/day{day:02}_part{part}"]
+                "work_dir": f"./{year}",
+                "compile":  ["cargo", "build", "--release", "--bin", f"day{day:02}_part{part}"],
+                "execute":  [f"./target/release/day{day:02}_part{part}"]
             }
 
     assert False, f"Commands not found for language {language}"
 
+##########################
+## Tool implementation ###
+##########################
+
+# Read secret session cookie for API requests
+def read_session_cookie() -> str | None:
+    path = Path(".session_cookie")
+    if not path.is_file():
+        print(f"Error: Please create a '{path.name}' file containing your login session cookie")
+        return None
+    with open(path, "r") as f:
+        return f.read().strip()
 
 # Setup solution template and input
-def setup(language, year, day, session):
+def setup(language: str, year: int, day: int, session_cookie: str):
     dir_path = Path(f"{year}/day{day:02}")
 
     # Create directory
@@ -73,7 +89,7 @@ def setup(language, year, day, session):
             print("Already exists")
         else:
             with file_path.open("w") as f:
-                f.write(get_template(language, year, day, part))
+                f.write(get_setup_template(language, year, day, part))
             print("Done")
 
     # Download input
@@ -82,7 +98,7 @@ def setup(language, year, day, session):
     if input_path.is_file():
         print("Already exists")
     else:
-        response = requests.get(url=f"https://adventofcode.com/{year}/day/{day}/input", cookies={"session": session})
+        response = requests.get(url=f"https://adventofcode.com/{year}/day/{day}/input", cookies={"session": session_cookie})
         if response.status_code == 200:
             with input_path.open("w") as f:
                 f.write(response.text)
@@ -91,17 +107,17 @@ def setup(language, year, day, session):
             print(f"Error {response.status_code}: {response.reason}")
 
 # Compile and execute solution
-def run(language, year, day, part):
+def run(language: str, year: int, day: int, part: int):
     print(f"================")
     print(f"==== Part {part} ====")
     print(f"================\n")
 
-    commands = get_commands(language, year, day, part)
+    commands = get_run_commands(language, year, day, part)
 
     # Compile
     if commands["compile"] is not None:
         try:
-            compile = subprocess.run(commands["compile"], cwd=commands["dir"])
+            compile = subprocess.run(commands["compile"], cwd=commands["work_dir"])
         except FileNotFoundError:
             print(f"Error: Compiler '{commands['compile'][0]}' not found\n")
             return
@@ -113,7 +129,7 @@ def run(language, year, day, part):
     with open(f"{year}/day{day:02}/input", "r") as f:
         time_start = time.time()
         try:
-            execute = subprocess.run(commands["execute"], stdin=f.fileno(), cwd=commands["dir"], text=True)
+            execute = subprocess.run(commands["execute"], stdin=f.fileno(), cwd=commands["work_dir"], text=True)
         except FileNotFoundError:
             print(f"Error: Executable '{commands['execute'][0]}' not found\n")
             return
@@ -134,12 +150,9 @@ def main():
     args = parser.parse_args()
     match args.command:
         case "setup":
-            if not Path(".session").is_file():
-                print("Error: Please create a '.session' file containing your login session cookie")
-                return
-            with open(".session", "r") as f:
-                session = f.read().strip()
-            setup(args.l, args.y, args.d, session)
+            session_cookie = read_session_cookie()
+            if session_cookie is not None:
+                setup(args.l, args.y, args.d, session_cookie)
         case "run":
             if args.part is None:	
                 run(args.l, args.y, args.d, 1)
