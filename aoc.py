@@ -104,9 +104,9 @@ class RsConfig(LanguageConfig):
         return ["cargo", "run", "--bin", f"day{day:02}_part{part}", release_flag]
 
 
-##########################
-## Tool implementation ###
-##########################
+#######################
+## Command line tool ##
+#######################
 
 
 # Read secret session cookie for API requests
