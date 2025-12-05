@@ -24,10 +24,10 @@ class LanguageConfig:
     def get_working_dir(year: int, day: int, part: int) -> str:
         raise NotImplementedError()
 
-    def get_compile_command(year: int, day: int, part: int) -> list[str]:
+    def get_compile_command(year: int, day: int, part: int, release: bool) -> list[str]:
         raise NotImplementedError()
 
-    def get_execute_command(year: int, day: int, part: int) -> list[str]:
+    def get_execute_command(year: int, day: int, part: int, release: bool) -> list[str]:
         raise NotImplementedError()
 
 
@@ -42,10 +42,10 @@ class CppConfig(LanguageConfig):
     def get_working_dir(year: int, day: int, part: int) -> str:
         return f"./{year}/day{day:02}"
 
-    def get_compile_command(year: int, day: int, part: int) -> list[str]:
+    def get_compile_command(year: int, day: int, part: int, release: bool) -> list[str]:
         return ["g++", "-std=c++17", "-O2", "-o", f"part{part}", f"part{part}.cpp"]
 
-    def get_execute_command(year: int, day: int, part: int) -> list[str]:
+    def get_execute_command(year: int, day: int, part: int, release: bool) -> list[str]:
         return [f"./part{part}"]
 
 
@@ -60,10 +60,10 @@ class CsConfig(LanguageConfig):
     def get_working_dir(year: int, day: int, part: int) -> str:
         return f"./{year}"
 
-    def get_compile_command(year: int, day: int, part: int) -> list[str]:
+    def get_compile_command(year: int, day: int, part: int, release: bool) -> list[str]:
         return ["dotnet", "build", "-o", "./bin/build", "--nologo", "-v", "q", "-clp:NoSummary"]
 
-    def get_execute_command(year: int, day: int, part: int) -> list[str]:
+    def get_execute_command(year: int, day: int, part: int, release: bool) -> list[str]:
         return ["dotnet", f"./bin/build/{year}.dll", f"{day}", f"{part}"]
 
 
@@ -78,10 +78,10 @@ class PyConfig(LanguageConfig):
     def get_working_dir(year: int, day: int, part: int) -> str:
         return f"./{year}/day{day:02}"
 
-    def get_compile_command(year: int, day: int, part: int) -> list[str]:
+    def get_compile_command(year: int, day: int, part: int, release: bool) -> list[str]:
         return []
 
-    def get_execute_command(year: int, day: int, part: int) -> list[str]:
+    def get_execute_command(year: int, day: int, part: int, release: bool) -> list[str]:
         return ["python", f"part{part}.py"]
 
 
@@ -96,11 +96,12 @@ class RsConfig(LanguageConfig):
     def get_working_dir(year: int, day: int, part: int) -> str:
         return f"./{year}"
 
-    def get_compile_command(year: int, day: int, part: int) -> list[str]:
-        return ["cargo", "build", "--release", "--bin", f"day{day:02}_part{part}"]
+    def get_compile_command(year: int, day: int, part: int, release: bool) -> list[str]:
+        return []
 
-    def get_execute_command(year: int, day: int, part: int) -> list[str]:
-        return [f"./target/release/day{day:02}_part{part}"]
+    def get_execute_command(year: int, day: int, part: int, release: bool) -> list[str]:
+        release_flag = "--release" if release else ""
+        return ["cargo", "run", "--bin", f"day{day:02}_part{part}", release_flag]
 
 
 ##########################
@@ -163,8 +164,8 @@ def run(language: type[LanguageConfig], year: int, day: int, part: int, release:
     print(f"================\n")
 
     working_dir = language.get_working_dir(year, day, part)
-    compile_command = language.get_compile_command(year, day, part)
-    execute_command = language.get_execute_command(year, day, part)
+    compile_command = language.get_compile_command(year, day, part, release)
+    execute_command = language.get_execute_command(year, day, part, release)
 
     # Compile
     if len(compile_command) > 0:
@@ -178,7 +179,7 @@ def run(language: type[LanguageConfig], year: int, day: int, part: int, release:
             return
 
     # Execute
-    with open(f"{year}/day{day:02}/input", "r") as f: # Pipe input to stdin
+    with open(f"{year}/day{day:02}/input", "r") as f:  # Pipe input to stdin
         time_start = time.time()
         try:
             execute = subprocess.run(execute_command, stdin=f.fileno(), cwd=working_dir, text=True)
