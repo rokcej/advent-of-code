@@ -2,6 +2,7 @@
 # Run with parameter -h to display more info
 # To add support for new languages, extend LanguageConfig
 
+import os
 import argparse
 from pathlib import Path
 import requests
@@ -97,11 +98,14 @@ class RsConfig(LanguageConfig):
         return f"./{year}"
 
     def get_compile_command(year: int, day: int, part: int, release: bool) -> list[str]:
-        return []
+        build_profile = "release" if release else "dev"
+        return ["cargo", "build", "--bin", f"day{day:02}_part{part}", "--profile", build_profile]
 
     def get_execute_command(year: int, day: int, part: int, release: bool) -> list[str]:
-        release_flag = "--release" if release else ""
-        return ["cargo", "run", "--bin", f"day{day:02}_part{part}", release_flag]
+        build_folder = "release" if release else "debug"
+        if os.name == "nt":  # Windows - cwd parameter in subprocess.run doesn't work
+            return [f"./{year}/target/{build_folder}/day{day:02}_part{part}.exe"]
+        return [f"target/{build_folder}/day{day:02}_part{part}"]
 
 
 #######################
